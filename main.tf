@@ -1,16 +1,16 @@
 provider "aws" {
-  region = "us-east-1"
+  region = "us-east-2"
 }
 
 resource "aws_instance" "aws-jenkins-ec2" {
-  ami = "ami-02d7fd1c2af6eead0"
-  instance_type = "t2.micro"
+  ami                    = "ami-0e0bf53f6def86294"
+  instance_type          = "t2.micro"
   vpc_security_group_ids = [aws_security_group.jenkins_sg.id]
   tags = {
-    Name = "Jenkins_Server"
+    Name = "Jenkins_TF_Server"
   }
 
-user_data = <<-EOF
+  user_data = <<-EOF
 #!bin/bash
     sudo yum update -y
     sudo wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins.io/redhat-stable/jenkins.repo
@@ -25,36 +25,36 @@ user_data = <<-EOF
 }
 
 resource "aws_security_group" "jenkins_sg" {
-  name = "jenkins-sg"
-  vpc_id = "vpc-0a17b1954a7121c05"
+  name   = "jenkins-sg"
+  vpc_id = "vpc-041f652d3287d404f"
 
- ingress  {
-    from_port = 22
-    to_port   = 22
-    protocol  = "tcp"
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
- }
+  }
 
- ingress  {
-    from_port = 8080
-    to_port   = 8080
-    protocol  = "tcp"
+  ingress {
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
- }
+  }
 
- ingress  {
+  ingress {
     description = "Incoming 443"
-    from_port = 443
-    to_port   = 443
-    protocol  = "tcp"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
- }
+  }
 
- egress   {
-    from_port = 0
-    to_port   = 0
-    protocol  = "-1"
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
- }
+  }
 
 }
